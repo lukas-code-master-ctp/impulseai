@@ -49,10 +49,12 @@ Los dos formularios del sitio (el corto de la home y el completo de `/contacto`)
 envían un `POST` con JSON a `/api/contacto`. La función manda dos correos con
 [Resend](https://resend.com):
 
+Ambos salen desde `no-replay@impulseai.cl`:
+
 1. **Aviso interno** a `contacto@impulseai.cl`, con `reply_to` apuntando a quien
    escribió, para responderle directo desde la bandeja.
 2. **Confirmación** a quien escribió, con copia de su mensaje y `reply_to` al
-   buzón interno.
+   buzón interno, así una respuesta suya llega a una dirección real.
 
 El aviso interno es el crítico: si falla, la respuesta es un 502 y el formulario
 muestra el correo de contacto como alternativa. Si solo falla la confirmación, el
@@ -67,6 +69,9 @@ envío se da por bueno — el contacto ya llegó.
    clave de Resend. Marcarla para Production, Preview y Development.
 3. Volver a desplegar para que la variable quede disponible.
 
+La clave vive solo en Vercel: no va en el repositorio ni en ningún archivo del
+proyecto. Si alguna vez queda expuesta, se revoca en Resend y se genera otra.
+
 Si el remitente cambia, se ajustan `REMITENTE` y `BUZON` en `api/contacto.js`.
 
 ### Contra el spam
@@ -76,9 +81,24 @@ llega con contenido, la función responde éxito y no envía nada. Todo el texto
 escribe el usuario se escapa antes de entrar al HTML del correo, y las cabeceras
 (asunto, destinatarios) se limpian de saltos de línea.
 
-**Falta rate limiting.** Un atacante que conozca el endpoint puede llamarlo en
-bucle y consumir tu cuota de Resend. Antes de que el sitio tenga tráfico real,
-conviene agregar Vercel Firewall o un límite por IP.
+### Rate limiting
+
+Hay dos frenos en `api/contacto.js`:
+
+| Freno | Límite | Para qué |
+| --- | --- | --- |
+| Por IP | 5 envíos cada 10 minutos | Que nadie repita el formulario en bucle |
+| Global de la instancia | 40 envíos por hora | Proteger la cuota de Resend aunque el ataque venga repartido |
+
+Al pasarse responde `429` con `Retry-After` y sin tocar Resend. El freno corre
+antes de todo lo demás, así que un robot bloqueado tampoco gasta cómputo.
+
+**Es best-effort a propósito.** Los contadores viven en la memoria de la
+instancia, y en serverless cada instancia tiene los suyos: si Vercel levanta
+varias, el límite real es el de cada una. Corta el abuso obvio, no un ataque
+distribuido. Para eso hace falta un contador compartido (Upstash o Vercel KV) o
+activar **Vercel Firewall**, que no necesita tocar código. Vale la pena cuando el
+sitio tenga tráfico real.
 
 ## Reglas de marca aplicadas
 
@@ -120,10 +140,11 @@ Todas provienen de los sitios públicos de los productos o fueron entregadas dir
 
 ## Pendientes antes de publicar
 
-1. **El formulario necesita `RESEND_API_KEY` en Vercel y el dominio verificado en Resend.** Sin eso responde un 500 con el correo de contacto como alternativa. Ver "Formulario de contacto" más arriba. Falta también rate limiting.
-2. **Retail / e-commerce quedó fuera del sitio.** El design system la lista como vertical activa, pero no hay producto que la respalde, así que no se menciona. Si existe uno, se agrega como tercer producto.
-3. **Verificar las cifras de precio de Cierra** antes de publicar: se leyeron de cierra.cl y los planes pueden cambiar.
-4. **La dirección "Santiago, Chile"** es la única referencia de ubicación; confirmar si va una dirección real. El dominio confirmado es `impulseai.cl`.
-5. **Las capturas son de las landings de los productos** (`assets/img/cierra-dashboard.png`, `assets/img/tapcar-ficha.png`), recortadas al panel de interfaz. Si el producto cambia de aspecto, hay que volver a capturarlas. Los originales sin recortar están en `Media/`, fuera del repositorio.
-6. **Fuentes desde Google Fonts.** Si la marca compra una tipografía propia, se reemplaza el `<link>` de cada página y `--font-sans` en `tokens.css`.
-7. Falta agregar `og:image`, `sitemap.xml` y `robots.txt` según el dominio final.
+1. **El formulario necesita `RESEND_API_KEY` en Vercel y el dominio verificado en Resend.** Sin eso responde un 500 con el correo de contacto como alternativa. Ver "Formulario de contacto" más arriba.
+2. **Revisar la escritura de `no-replay@impulseai.cl`.** Lo estándar es `no-reply` ("no responder"); `replay` significa "repetición". Si fue un desliz, se cambia `REMITENTE` en `api/contacto.js` y se crea la dirección correcta en Resend.
+3. **Retail / e-commerce quedó fuera del sitio.** El design system la lista como vertical activa, pero no hay producto que la respalde, así que no se menciona. Si existe uno, se agrega como tercer producto.
+4. **Verificar las cifras de precio de Cierra** antes de publicar: se leyeron de cierra.cl y los planes pueden cambiar.
+5. **La dirección "Santiago, Chile"** es la única referencia de ubicación; confirmar si va una dirección real. El dominio confirmado es `impulseai.cl`.
+6. **Las capturas son de las landings de los productos** (`assets/img/cierra-dashboard.png`, `assets/img/tapcar-ficha.png`), recortadas al panel de interfaz. Si el producto cambia de aspecto, hay que volver a capturarlas. Los originales sin recortar están en `Media/`, fuera del repositorio.
+7. **Fuentes desde Google Fonts.** Si la marca compra una tipografía propia, se reemplaza el `<link>` de cada página y `--font-sans` en `tokens.css`.
+8. Falta agregar `og:image`, `sitemap.xml` y `robots.txt` según el dominio final.

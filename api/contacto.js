@@ -15,8 +15,78 @@
 
 const RESEND_ENDPOINT = 'https://api.resend.com/emails';
 
-const REMITENTE = 'Impulse AI <contacto@impulseai.cl>';
+const REMITENTE = 'Impulse AI <no-replay@impulseai.cl>';
 const BUZON = 'contacto@impulseai.cl';
+
+/* --------------------------------------------------------- Rate limiting
+   Freno en memoria del proceso. Es best-effort a proposito: en serverless
+   cada instancia tiene su propio contador y Vercel puede levantar varias,
+   asi que esto corta el abuso obvio desde una IP pero no es una garantia.
+   El freno duro para trafico real es Vercel Firewall o un contador
+   compartido (Upstash / Vercel KV); ver README.
+
+   Dos capas:
+     - por IP, para que nadie repita el formulario en bucle
+     - global de la instancia, para proteger la cuota de Resend aunque el
+       ataque venga repartido entre muchas IP
+   -------------------------------------------------------------------------- */
+
+const VENTANA_IP_MS = 10 * 60 * 1000;
+const MAX_POR_IP = 5;
+
+const VENTANA_GLOBAL_MS = 60 * 60 * 1000;
+const MAX_GLOBAL = 40;
+
+const MAX_IPS_EN_MEMORIA = 5000;
+
+const golpesPorIp = new Map();
+let golpesGlobales = [];
+
+function vigentes(marcas, ahora, ventana) {
+  let corte = 0;
+  while (corte < marcas.length && ahora - marcas[corte] >= ventana) corte++;
+  return corte ? marcas.slice(corte) : marcas;
+}
+
+function ipDelCliente(req) {
+  const cabeceras = req.headers || {};
+  const real = cabeceras['x-real-ip'];
+  if (real) return String(real).trim();
+
+  const reenviada = cabeceras['x-forwarded-for'];
+  if (reenviada) return String(reenviada).split(',')[0].trim();
+
+  return (req.socket && req.socket.remoteAddress) || 'desconocida';
+}
+
+/* Devuelve null si puede pasar, o los segundos que faltan para reintentar. */
+function esperaRequerida(ip, ahora) {
+  golpesGlobales = vigentes(golpesGlobales, ahora, VENTANA_GLOBAL_MS);
+  if (golpesGlobales.length >= MAX_GLOBAL) {
+    return Math.ceil((VENTANA_GLOBAL_MS - (ahora - golpesGlobales[0])) / 1000);
+  }
+
+  const previos = vigentes(golpesPorIp.get(ip) || [], ahora, VENTANA_IP_MS);
+  if (previos.length >= MAX_POR_IP) {
+    golpesPorIp.set(ip, previos);
+    return Math.ceil((VENTANA_IP_MS - (ahora - previos[0])) / 1000);
+  }
+
+  previos.push(ahora);
+  golpesPorIp.set(ip, previos);
+  golpesGlobales.push(ahora);
+
+  /* La memoria de la instancia no puede crecer sin tope: si hay demasiadas
+     IP guardadas, se sueltan primero las que ya no tienen golpes vigentes. */
+  if (golpesPorIp.size > MAX_IPS_EN_MEMORIA) {
+    for (const [clave, marcas] of golpesPorIp) {
+      if (!vigentes(marcas, ahora, VENTANA_IP_MS).length) golpesPorIp.delete(clave);
+      if (golpesPorIp.size <= MAX_IPS_EN_MEMORIA) break;
+    }
+  }
+
+  return null;
+}
 
 const MARCA = '#FF4D1F';
 const TINTA = '#121212';
@@ -157,7 +227,8 @@ function correoCliente(d) {
     parrafosHtml(d.mensaje) +
     '</div>' +
     '<p style="margin:32px 0 0;padding-top:24px;border-top:1px solid ' + BORDE + ';' +
-    'line-height:1.5;color:' + GRIS + '">Si quieres agregar algo, responde este correo.</p>'
+    'line-height:1.5;color:' + GRIS + '">Si quieres agregar algo, responde este correo: ' +
+    'llega a <a href="mailto:' + BUZON + '" style="color:' + MARCA + '">' + BUZON + '</a>.</p>'
   );
 }
 
@@ -166,7 +237,7 @@ function textoCliente(d) {
     'Te respondemos en un dia habil con una propuesta concreta de primer paso.\n' +
     'Si no es para nosotros, tambien te lo decimos.\n\n' +
     'Copia de lo que nos enviaste:\n' + d.mensaje + '\n\n' +
-    'Si quieres agregar algo, responde este correo.\n\n' +
+    'Si quieres agregar algo, responde este correo: llega a ' + BUZON + '.\n\n' +
     'Impulse AI - impulseai.cl\n';
 }
 
@@ -198,6 +269,15 @@ module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ ok: false, error: 'Método no permitido.' });
+  }
+
+  const espera = esperaRequerida(ipDelCliente(req), Date.now());
+  if (espera !== null) {
+    res.setHeader('Retry-After', String(espera));
+    return res.status(429).json({
+      ok: false,
+      error: 'Demasiados envíos seguidos. Vuelve a intentar en un rato o escríbenos a ' + BUZON + '.'
+    });
   }
 
   const apiKey = process.env.RESEND_API_KEY;
