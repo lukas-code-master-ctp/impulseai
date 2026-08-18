@@ -1,0 +1,159 @@
+/* =========================================================================
+   Impulse AI — Design tokens
+   Derivados 1:1 del design system "Impulse AI Design System".
+   Regla base: esquina recta, borde de 1px, sin sombras ni gradientes.
+   ========================================================================= */
+
+:root {
+  /* --- Marca: un solo color ------------------------------------------- */
+  --brand-500: #FF4D1F;
+  --brand-600: #D93D13;   /* solo hover */
+  --brand-100: #FFE9E1;   /* solo fondo suave */
+
+  /* --- Tinta y grises -------------------------------------------------- */
+  --ink-900: #121212;
+  --ink-800: #1A1A1A;
+  --ink-700: #2E2E2E;
+  --gray-500: #6B6B6B;
+  --gray-400: #8A8A8A;
+  --gray-300: #A5A09B;
+
+  /* --- Neutros cálidos ------------------------------------------------- */
+  --neutral-300: #DFDCD8;
+  --neutral-200: #E6E4E1;
+  --neutral-50: #FAF9F8;
+  --white: #FFFFFF;
+
+  /* --- Semánticos ------------------------------------------------------ */
+  --surface-page: var(--neutral-50);
+  --surface-card: var(--white);
+  --surface-sunken: var(--neutral-200);
+  --surface-inverse: var(--ink-900);
+  --surface-brand: var(--brand-500);
+
+  --text-primary: var(--ink-900);
+  --text-secondary: var(--gray-500);
+  --text-muted: var(--gray-400);
+  --text-inverse: var(--white);
+  --text-accent: var(--brand-500);
+
+  --border-subtle: var(--neutral-300);
+  --border-strong: var(--ink-900);
+  --border-accent: var(--brand-500);
+
+  --action-primary-bg: var(--brand-500);
+  --action-primary-bg-hover: var(--brand-600);
+  --action-primary-text: var(--white);
+  --action-secondary-border: var(--neutral-300);
+  --action-secondary-text: var(--ink-900);
+
+  --focus-ring: var(--brand-500);
+
+  /* --- Tipografía ------------------------------------------------------ */
+  --font-sans: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+
+  --text-display: 64px;
+  --text-h1: 44px;
+  --text-h2: 32px;
+  --text-h3: 24px;
+  --text-body-lg: 19px;
+  --text-body: 17px;
+  --text-small: 15px;
+  --text-label: 12px;
+
+  --leading-tight: 1.05;
+  --leading-snug: 1.2;
+  --leading-body: 1.45;
+
+  --tracking-display: -0.035em;
+  --tracking-heading: -0.03em;
+  --tracking-normal: 0em;
+  --tracking-label: 0.14em;
+
+  /* --- Espaciado ------------------------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 130px;
+
+  --gutter-web: var(--space-6);
+  --content-max: 1200px;
+  --measure-text: 62ch;
+
+  /* --- Bordes ---------------------------------------------------------- */
+  --radius-none: 0px;
+  --radius-sm: 2px;
+  --radius-pill: 999px;
+  --radius-card: var(--radius-none);
+
+  --border-width: 1px;
+  --border-width-strong: 2px;
+  --stroke-icon: 2px;
+  --icon-grid: 24px;
+
+  --shadow-none: none;
+
+  /* --- Movimiento ------------------------------------------------------ */
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-launch: 900ms;
+  --ease-launch: cubic-bezier(.2, .8, .2, 1);
+  --ease-standard: cubic-bezier(.4, 0, .2, 1);
+  --launch-angle: 15deg;
+}
+
+/* Superficies oscuras: se activan con data-theme="inverse" en el contenedor */
+[data-theme="inverse"] {
+  --surface-page: var(--ink-900);
+  --surface-card: var(--ink-800);
+  --text-primary: var(--white);
+  --text-secondary: #B5B5B5;
+  --border-subtle: var(--ink-700);
+}
+
+/* --- Animación de marca: la estela aparece y el punto sale 15° arriba --- */
+@keyframes impulse-launch {
+  0%   { transform: translate(-14px, 6px); opacity: 0; }
+  22%  { transform: translate(0, 0); opacity: 1; }
+  72%  { transform: translate(0, 0); opacity: 1; }
+  100% { transform: translate(26px, -12px); opacity: 0; }
+}
+
+@keyframes impulse-trail {
+  0%   { opacity: 0; }
+  30%  { opacity: 0.5; }
+  100% { opacity: 0; }
+}
+
+/* --- Variante en bucle -------------------------------------------------
+   Mismo gesto, repetido: el punto entra, se asienta, acelera fuera de
+   cuadro y el cuadro queda vacio un instante antes de volver a empezar.
+   Nunca vuelve hacia atras: el retroceso leeria como lo contrario al
+   impulso. El tramo de salida usa ease-in para que acelere al salir.
+   ---------------------------------------------------------------------- */
+@keyframes impulse-launch-loop {
+  0%   { transform: translate(-14px, 6px); opacity: 0; }
+  10%  { transform: translate(0, 0); opacity: 1; }
+  50%  { transform: translate(0, 0); opacity: 1; animation-timing-function: cubic-bezier(.4, 0, 1, 1); }
+  80%  { transform: translate(26px, -12px); opacity: 0; }
+  100% { transform: translate(26px, -12px); opacity: 0; }
+}
+
+@keyframes impulse-trail-loop {
+  0%   { opacity: 0; }
+  15%  { opacity: var(--trail-opacity, 0.5); }
+  55%  { opacity: var(--trail-opacity, 0.5); }
+  78%  { opacity: 0; }
+  100% { opacity: 0; }
+}

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contacto — Impulse AI</title>
+<meta name="description" content="Cuéntanos el problema. Respondemos en un día hábil con una propuesta concreta de primer paso.">
+<meta name="theme-color" content="#FAF9F8">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Impulse AI">
+<meta property="og:title" content="Contacto — Impulse AI">
+<meta property="og:description" content="Respondemos en un día hábil con una propuesta concreta de primer paso.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="logo" href="index.html" aria-label="Impulse AI, ir al inicio">
+      <svg class="mark" width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <g transform="translate(11.4, 10)" fill="none" stroke="#FF4D1F" stroke-linecap="round">
+          <line x1="9.3" y1="62.2" x2="13.2" y2="47.7" stroke-width="9" opacity="0.24"></line>
+          <line x1="26.7" y1="66.8" x2="33.9" y2="39.7" stroke-width="11" opacity="0.5"></line>
+          <line x1="46" y1="72" x2="57" y2="31" stroke-width="13"></line>
+          <circle cx="61.4" cy="14.6" r="6.5" fill="#FF4D1F" stroke="none"></circle>
+        </g>
+      </svg>
+      <span class="logo__word">Impulse AI</span>
+    </a>
+
+    <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="nav-panel">Menú</button>
+
+    <div class="nav-panel" id="nav-panel" data-nav-panel>
+      <nav class="nav" aria-label="Navegación principal">
+        <a class="nav__link" href="cierra.html">Cierra</a>
+        <a class="nav__link" href="tapcar.html">TapCar</a>
+        <a class="nav__link" href="nosotros.html">Nosotros</a>
+      </nav>
+      <a class="btn btn--primary btn--sm nav-cta-mobile" href="contacto.html" aria-current="page">Hablemos</a>
+    </div>
+
+    <a class="btn btn--primary btn--sm" href="contacto.html" aria-current="page">Hablemos</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============================================================ Contacto -->
+  <section class="split">
+    <div class="split__side">
+      <span class="mono">Contacto</span>
+      <h1 class="t-display" style="max-width:12ch">Cuéntanos el problema.</h1>
+      <p class="t-lead">Respondemos en un día hábil con una propuesta concreta de primer paso. Si no es para nosotros, también te lo decimos.</p>
+      <hr class="rule">
+      <div class="stack stack-5">
+        <div class="stack stack-2">
+          <span class="mono">Correo</span>
+          <a class="t-body" href="mailto:contacto@impulseai.cl">contacto@impulseai.cl</a>
+        </div>
+        <div class="stack stack-2">
+          <span class="mono">Oficina</span>
+          <span class="t-body">Santiago, Chile</span>
+        </div>
+        <div class="stack stack-2">
+          <span class="mono">Tiempo de respuesta</span>
+          <span class="t-body">Un día hábil</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="split__side">
+      <form class="stack stack-5" data-contact-form novalidate>
+        <div class="field">
+          <label class="field__label" for="nombre">Nombre</label>
+          <input class="field__control" id="nombre" name="nombre" type="text" placeholder="Tu nombre" autocomplete="name" required>
+          <span class="field__error" data-error role="alert"></span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="empresa">Empresa</label>
+          <input class="field__control" id="empresa" name="empresa" type="text" placeholder="Nombre de tu empresa" autocomplete="organization" required>
+          <span class="field__error" data-error role="alert"></span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="correo">Correo</label>
+          <input class="field__control" id="correo" name="correo" type="email" placeholder="tu@empresa.cl" autocomplete="email" required>
+          <span class="field__error" data-error role="alert"></span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="interes">Qué te interesa</label>
+          <select class="field__control" id="interes" name="interes" required>
+            <option value="">Elige una</option>
+            <option value="cierra">Cierra: venta de parcelas</option>
+            <option value="tapcar">TapCar: control de flota</option>
+            <option value="nuevo">Un producto nuevo</option>
+            <option value="otro">Otra cosa</option>
+          </select>
+          <span class="field__error" data-error role="alert"></span>
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="mensaje">Qué quieres resolver</label>
+          <textarea class="field__control" id="mensaje" name="mensaje" placeholder="Describe el problema y, si la tienes, la cifra que lo mide" required></textarea>
+          <span class="field__hint">Con una cifra concreta la primera respuesta es mucho más útil.</span>
+          <span class="field__error" data-error role="alert"></span>
+        </div>
+
+        <div>
+          <button class="btn btn--primary btn--lg" type="submit">Enviar</button>
+        </div>
+
+        <p class="form-note" data-form-status tabindex="-1" hidden></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================================== Qué esperar -->
+  <section class="section section--card">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">Qué pasa después</span>
+        <h2 class="t-h1">Tres pasos, sin intermediarios.</h2>
+      </div>
+      <ul class="ruled-list">
+        <li>
+          <span class="ruled-list__key">Día 1</span>
+          <div class="ruled-list__body">
+            <h3 class="t-h3">Te respondemos</h3>
+            <p class="t-body">Un correo de vuelta con nuestra lectura del problema y una pregunta concreta, no un catálogo de servicios.</p>
+          </div>
+        </li>
+        <li>
+          <span class="ruled-list__key">Semana 1</span>
+          <div class="ruled-list__body">
+            <h3 class="t-h3">Conversamos 30 minutos</h3>
+            <p class="t-body">Con quien vive el problema todos los días. Si calza con Cierra o TapCar, te mostramos el producto funcionando.</p>
+          </div>
+        </li>
+        <li>
+          <span class="ruled-list__key">Semana 2</span>
+          <div class="ruled-list__body">
+            <h3 class="t-h3">Propuesta de primer paso</h3>
+            <p class="t-body">Una página: qué se implementa, en cuántas semanas, qué cifra se mide y qué necesitamos de tu equipo.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__inner">
+      <div class="site-footer__col">
+        <a class="logo logo--inverse" href="index.html" aria-label="Impulse AI, ir al inicio">
+          <svg class="mark" width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+            <g transform="translate(11.4, 10)" fill="none" stroke="#FFFFFF" stroke-linecap="round">
+              <line x1="9.3" y1="62.2" x2="13.2" y2="47.7" stroke-width="9" opacity="0.24"></line>
+              <line x1="26.7" y1="66.8" x2="33.9" y2="39.7" stroke-width="11" opacity="0.5"></line>
+              <line x1="46" y1="72" x2="57" y2="31" stroke-width="13"></line>
+              <circle cx="61.4" cy="14.6" r="6.5" fill="#FFFFFF" stroke="none"></circle>
+            </g>
+          </svg>
+          <span class="logo__word">Impulse AI</span>
+        </a>
+        <p class="site-footer__blurb">Holding tecnológico. Construimos productos propios y los dejamos operando.</p>
+      </div>
+      <div class="site-footer__col">
+        <span class="site-footer__title">Productos</span>
+        <a class="site-footer__link" href="cierra.html">Cierra</a>
+        <a class="site-footer__link" href="tapcar.html">TapCar</a>
+      </div>
+      <div class="site-footer__col">
+        <span class="site-footer__title">Empresa</span>
+        <a class="site-footer__link" href="nosotros.html">Nosotros</a>
+        <a class="site-footer__link" href="contacto.html">Contacto</a>
+      </div>
+      <div class="site-footer__col">
+        <span class="site-footer__title">Contacto</span>
+        <a class="site-footer__link" href="mailto:contacto@impulseai.cl">contacto@impulseai.cl</a>
+        <span class="site-footer__link">Santiago, Chile</span>
+      </div>
+    </div>
+    <div class="site-footer__legal">
+      <span>impulseai.cl</span>
+      <span>&copy; 2026 Impulse AI</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>

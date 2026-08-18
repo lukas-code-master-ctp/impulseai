@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TapCar — Impulse AI</title>
+<meta name="description" content="TapCar controla tu flota con un chip NFC en cada vehículo. Documentos, uso, daños y reportes sin que el conductor instale una app.">
+<meta name="theme-color" content="#FAF9F8">
+<link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Impulse AI">
+<meta property="og:title" content="TapCar — Impulse AI">
+<meta property="og:description" content="Tu flota a un Tap. Control de vehículos con chip NFC, sin app para el conductor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/tokens.css">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Ir al contenido</a>
+
+<header class="site-header">
+  <div class="wrap site-header__inner">
+    <a class="logo" href="index.html" aria-label="Impulse AI, ir al inicio">
+      <svg class="mark" width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+        <g transform="translate(11.4, 10)" fill="none" stroke="#FF4D1F" stroke-linecap="round">
+          <line x1="9.3" y1="62.2" x2="13.2" y2="47.7" stroke-width="9" opacity="0.24"></line>
+          <line x1="26.7" y1="66.8" x2="33.9" y2="39.7" stroke-width="11" opacity="0.5"></line>
+          <line x1="46" y1="72" x2="57" y2="31" stroke-width="13"></line>
+          <circle cx="61.4" cy="14.6" r="6.5" fill="#FF4D1F" stroke="none"></circle>
+        </g>
+      </svg>
+      <span class="logo__word">Impulse AI</span>
+    </a>
+
+    <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="nav-panel">Menú</button>
+
+    <div class="nav-panel" id="nav-panel" data-nav-panel>
+      <nav class="nav" aria-label="Navegación principal">
+        <a class="nav__link" href="cierra.html">Cierra</a>
+        <a class="nav__link" href="tapcar.html" aria-current="page">TapCar</a>
+        <a class="nav__link" href="nosotros.html">Nosotros</a>
+      </nav>
+      <a class="btn btn--primary btn--sm nav-cta-mobile" href="contacto.html">Hablemos</a>
+    </div>
+
+    <a class="btn btn--primary btn--sm" href="contacto.html">Hablemos</a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ================================================================ Hero -->
+  <section class="hero">
+    <div class="hero__copy">
+      <span class="badge">Producto · Flotas</span>
+      <h1 class="t-display hero__title">Tu flota a un Tap.</h1>
+      <p class="t-lead">Un chip NFC pegado en cada vehículo. El conductor acerca el teléfono, se identifica con su PIN y registra el uso. Sin instalar una app y sin crear una cuenta.</p>
+      <div class="row">
+        <a class="btn btn--primary btn--lg" href="https://tapcar.cl" target="_blank" rel="noopener">Ir a tapcar.cl</a>
+        <a class="btn btn--secondary btn--lg" href="#capacidades">Ver qué incluye</a>
+      </div>
+      <div class="hero__stats">
+        <div class="stat">
+          <span class="stat__value">+100</span>
+          <span class="stat__label">vehículos ya operan con un Tap</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">0</span>
+          <span class="stat__label">apps que instalar el conductor</span>
+        </div>
+        <div class="stat">
+          <span class="stat__value">2 a 50</span>
+          <span class="stat__label">vehículos: da lo mismo el tamaño</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__panel hero__panel--stage">
+      <img class="shot" src="assets/img/tapcar-ficha.png" alt="Ficha pública de un vehículo en TapCar: patente, estado de la documentación y vencimiento de permiso de circulación, revisión técnica y SOAP.">
+    </div>
+  </section>
+
+  <!-- ============================================================ Problema -->
+  <section class="split">
+    <div class="split__side">
+      <span class="mono">El problema</span>
+      <h2 class="t-h1">El control de flota se cae en el registro.</h2>
+      <p class="t-body">El permiso de circulación vence y nadie se entera. Nadie sabe quién manejó el furgón el martes. El daño aparece dos semanas después y ya no hay a quién preguntarle. Los sistemas existentes piden que cada conductor instale una app y cree una cuenta, y ahí muere la adopción.</p>
+    </div>
+    <div class="split__side">
+      <span class="mono">Lo que hace TapCar</span>
+      <h2 class="t-h1">El registro cuesta un gesto.</h2>
+      <p class="t-body">El conductor acerca el teléfono al chip del vehículo y entra directo con su PIN. Registra salida, entrega o daño en segundos. Todo queda con nombre, vehículo, hora y foto.</p>
+    </div>
+  </section>
+
+  <!-- ========================================================= Capacidades -->
+  <section class="section section--card" id="capacidades">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">Qué incluye</span>
+        <h2 class="t-h1">Un chip, y detrás toda la operación.</h2>
+      </div>
+      <div class="grid grid-2">
+        <div class="card">
+          <h3 class="t-h3">Documentos con alerta</h3>
+          <p class="card__text">Permiso de circulación, revisión técnica y seguro con fecha de vencimiento y aviso antes de que caduquen.</p>
+        </div>
+        <div class="card">
+          <h3 class="t-h3">Identificación por PIN</h3>
+          <p class="card__text">Cada conductor tiene su clave. El uso queda atribuido a una persona, no a un vehículo anónimo.</p>
+        </div>
+        <div class="card">
+          <h3 class="t-h3">Fotos de entrega con IA</h3>
+          <p class="card__text">Las fotos de entrega se analizan automáticamente para detectar el estado del vehículo en cada cambio de turno.</p>
+        </div>
+        <div class="card">
+          <h3 class="t-h3">Tablero en tiempo real</h3>
+          <p class="card__text">Qué vehículos están disponibles y quién tiene cada uno en este momento.</p>
+        </div>
+        <div class="card">
+          <h3 class="t-h3">Reporte de daños</h3>
+          <p class="card__text">El daño se registra en el momento, con foto y responsable. Deja de aparecer dos semanas tarde.</p>
+        </div>
+        <div class="card">
+          <h3 class="t-h3">Reportes y auditoría</h3>
+          <p class="card__text">Filtros por conductor, vehículo y fecha, con bitácora completa. Y una ficha pública de solo lectura para el control en la calle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== Implementación -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">Implementación</span>
+        <h2 class="t-h1">Pegar el chip y andar.</h2>
+      </div>
+      <ul class="ruled-list">
+        <li>
+          <span class="ruled-list__key">Paso 1</span>
+          <div class="ruled-list__body">
+            <h3 class="t-h3">Cargamos la flota</h3>
+            <p class="t-body">Vehículos, documentos y conductores. Si ya tienes una planilla, la subimos.</p>
+          </div>
+        </li>
+        <li>
+          <span class="ruled-list__key">Paso 2</span>
+          <div class="ruled-list__body">
+            <h3 class="t-h3">Instalas los chips</h3>
+            <p class="t-body">Un chip por vehículo, pegado donde tú decidas. No requiere instalación eléctrica ni taller.</p>
+          </div>
+        </li>
+        <li>
+          <span class="ruled-list__key">Paso 3</span>
+          <div class="ruled-list__body">
+            <h3 class="t-h3">El equipo empieza a registrar</h3>
+            <p class="t-body">Los conductores usan su PIN desde el primer día. El equipo de gestión entra al tablero con hasta cinco cuentas.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ================================================================= CTA -->
+  <section class="section section--card">
+    <div class="wrap">
+      <div class="cta">
+        <div class="stack stack-3">
+          <span class="mono">Siguiente paso</span>
+          <h2 class="t-h2">Da lo mismo si son dos autos o cincuenta.</h2>
+        </div>
+        <div class="row">
+          <a class="btn btn--primary btn--lg" href="https://tapcar.cl" target="_blank" rel="noopener">Ir a tapcar.cl</a>
+          <a class="btn btn--secondary btn--lg" href="contacto.html">Hablar con nosotros</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== Otro producto -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="mono">El otro producto</span>
+      </div>
+      <a class="card" href="cierra.html">
+        <span class="badge">Cierra · Inmobiliario</span>
+        <h3 class="t-h3">La venta de tus parcelas, de punta a punta</h3>
+        <p class="card__text">Del lead a la inscripción en el Conservador de Bienes Raíces, en un solo sistema.</p>
+        <span class="card__more">Ver Cierra</span>
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="site-footer__inner">
+      <div class="site-footer__col">
+        <a class="logo logo--inverse" href="index.html" aria-label="Impulse AI, ir al inicio">
+          <svg class="mark" width="30" height="30" viewBox="0 0 100 100" aria-hidden="true" focusable="false">
+            <g transform="translate(11.4, 10)" fill="none" stroke="#FFFFFF" stroke-linecap="round">
+              <line x1="9.3" y1="62.2" x2="13.2" y2="47.7" stroke-width="9" opacity="0.24"></line>
+              <line x1="26.7" y1="66.8" x2="33.9" y2="39.7" stroke-width="11" opacity="0.5"></line>
+              <line x1="46" y1="72" x2="57" y2="31" stroke-width="13"></line>
+              <circle cx="61.4" cy="14.6" r="6.5" fill="#FFFFFF" stroke="none"></circle>
+            </g>
+          </svg>
+          <span class="logo__word">Impulse AI</span>
+        </a>
+        <p class="site-footer__blurb">Holding tecnológico. Construimos productos propios y los dejamos operando.</p>
+      </div>
+      <div class="site-footer__col">
+        <span class="site-footer__title">Productos</span>
+        <a class="site-footer__link" href="cierra.html">Cierra</a>
+        <a class="site-footer__link" href="tapcar.html">TapCar</a>
+      </div>
+      <div class="site-footer__col">
+        <span class="site-footer__title">Empresa</span>
+        <a class="site-footer__link" href="nosotros.html">Nosotros</a>
+        <a class="site-footer__link" href="contacto.html">Contacto</a>
+      </div>
+      <div class="site-footer__col">
+        <span class="site-footer__title">Contacto</span>
+        <a class="site-footer__link" href="mailto:contacto@impulseai.cl">contacto@impulseai.cl</a>
+        <span class="site-footer__link">Santiago, Chile</span>
+      </div>
+    </div>
+    <div class="site-footer__legal">
+      <span>impulseai.cl</span>
+      <span>&copy; 2026 Impulse AI</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/site.js"></script>
+</body>
+</html>
