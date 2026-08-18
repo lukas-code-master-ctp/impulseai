@@ -4,8 +4,8 @@
     {
       "name": "impulse-site",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "4173"],
-      "port": 4173
+      "runtimeArgs": ["dev-server.py", "4180"],
+      "port": 4180
     }
   ]
 }

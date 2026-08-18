@@ -7,25 +7,40 @@ Construido sobre el design system **Impulse AI Design System** (proyecto de Clau
 ## Estructura
 
 ```
-index.html            Home: hero, productos, cómo nace un producto, respaldo, contacto
-cierra.html           Producto Cierra — venta de parcelas de punta a punta
-tapcar.html           Producto TapCar — control de flota con chip NFC
-nosotros.html         Propósito, modelo de holding, productos, principios, cifras
-contacto.html         Formulario completo y qué pasa después
+index.html            Home        ->  /
+cierra.html           Cierra      ->  /cierra
+tapcar.html           TapCar      ->  /tapcar
+nosotros.html         Nosotros    ->  /nosotros
+contacto.html         Contacto    ->  /contacto
+vercel.json           cleanUrls y trailingSlash
+dev-server.py         Servidor local que imita a Vercel
 assets/css/tokens.css Tokens de marca (color, tipo, espaciado, bordes, motion)
 assets/css/site.css   Componentes y layout del sitio
 assets/js/site.js     Menú móvil y validación del formulario
-assets/img/           Símbolo en SVG (naranja, blanco, tinta) + favicon
+assets/img/           Símbolo en SVG, favicon y capturas de producto
 .claude/launch.json   Config del servidor local de previsualización
 ```
+
+## URLs
+
+Las URLs no llevan `.html`. Lo resuelve `cleanUrls` en `vercel.json`, y los
+enlaces internos ya apuntan a la forma limpia (`/cierra`, no `/cierra.html`).
+Las rutas viejas no se rompen: Vercel redirige `/cierra.html` a `/cierra` con
+un 308. Las rutas de recursos son raíz-relativas (`/assets/...`) para que
+sobrevivan a cualquier forma de la URL.
+
+Esto asume que el sitio vive en la raíz del dominio. Si algún día se sirve
+desde un subdirectorio, hay que volver a rutas relativas.
 
 ## Ver el sitio
 
 ```bash
-python -m http.server 4173
+python dev-server.py
 ```
 
-Luego abre `http://localhost:4173`. No funciona bien con `file://` porque las hojas de estilo se cargan por ruta relativa.
+Luego abre `http://localhost:4173`. No sirve `python -m http.server`: devolvería
+404 en las URLs limpias. `dev-server.py` replica las dos reglas de `vercel.json`,
+así que lo que ves en local es lo que se publica. Tampoco funciona con `file://`.
 
 ## Reglas de marca aplicadas
 
