@@ -70,13 +70,6 @@ Todas provienen de los sitios públicos de los productos o fueron entregadas dir
 2. **Retail / e-commerce quedó fuera del sitio.** El design system la lista como vertical activa, pero no hay producto que la respalde, así que no se menciona. Si existe uno, se agrega como tercer producto.
 3. **Verificar las cifras de precio de Cierra** antes de publicar: se leyeron de cierra.cl y los planes pueden cambiar.
 4. **La dirección "Santiago, Chile"** es la única referencia de ubicación; confirmar si va una dirección real. El dominio confirmado es `impulseai.cl`.
-5. **Faltan las dos capturas.** El HTML ya las apunta; solo hay que guardar los archivos con estos nombres exactos:
-
-   | Archivo | Qué va ahí |
-   | --- | --- |
-   | `assets/img/cierra-dashboard.png` | Dashboard de Cierra |
-   | `assets/img/tapcar-ficha.png` | Ficha pública de TapCar |
-
-   Recorta solo el panel de la interfaz, sin el texto de la landing ni el fondo. Ancho recomendado: 1120px (se muestra a 560px, así que se ve nítido en pantallas retina). PNG o WebP.
+5. **Las capturas son de las landings de los productos** (`assets/img/cierra-dashboard.png`, `assets/img/tapcar-ficha.png`), recortadas al panel de interfaz. Si el producto cambia de aspecto, hay que volver a capturarlas. Los originales sin recortar están en `Media/`, fuera del repositorio.
 6. **Fuentes desde Google Fonts.** Si la marca compra una tipografía propia, se reemplaza el `<link>` de cada página y `--font-sans` en `tokens.css`.
 7. Falta agregar `og:image`, `sitemap.xml` y `robots.txt` según el dominio final.
