@@ -581,7 +581,9 @@ select.field__control {
 .shot {
   display: block;
   width: 100%;
-  max-width: 560px;
+  /* Tope al ancho nativo de las capturas: escalar hacia arriba las
+     desenfoca. Subir a 560px cuando existan versiones a 2x. */
+  max-width: 520px;
   height: auto;
   border: var(--border-width) solid var(--ink-700);
   border-radius: var(--radius-none);
