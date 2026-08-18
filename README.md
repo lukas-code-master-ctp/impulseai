@@ -12,6 +12,7 @@ cierra.html           Cierra      ->  /cierra
 tapcar.html           TapCar      ->  /tapcar
 nosotros.html         Nosotros    ->  /nosotros
 contacto.html         Contacto    ->  /contacto
+api/contacto.js       Función serverless: recibe el formulario y manda los correos
 vercel.json           cleanUrls y trailingSlash
 dev-server.py         Servidor local que imita a Vercel
 assets/css/tokens.css Tokens de marca (color, tipo, espaciado, bordes, motion)
@@ -41,6 +42,43 @@ python dev-server.py
 Luego abre `http://localhost:4173`. No sirve `python -m http.server`: devolvería
 404 en las URLs limpias. `dev-server.py` replica las dos reglas de `vercel.json`,
 así que lo que ves en local es lo que se publica. Tampoco funciona con `file://`.
+
+## Formulario de contacto
+
+Los dos formularios del sitio (el corto de la home y el completo de `/contacto`)
+envían un `POST` con JSON a `/api/contacto`. La función manda dos correos con
+[Resend](https://resend.com):
+
+1. **Aviso interno** a `contacto@impulseai.cl`, con `reply_to` apuntando a quien
+   escribió, para responderle directo desde la bandeja.
+2. **Confirmación** a quien escribió, con copia de su mensaje y `reply_to` al
+   buzón interno.
+
+El aviso interno es el crítico: si falla, la respuesta es un 502 y el formulario
+muestra el correo de contacto como alternativa. Si solo falla la confirmación, el
+envío se da por bueno — el contacto ya llegó.
+
+### Puesta en marcha
+
+1. Crear la cuenta en Resend y **verificar el dominio `impulseai.cl`** (DNS: SPF y
+   DKIM). Sin dominio verificado, Resend solo deja enviar desde `onboarding@resend.dev`
+   y únicamente a tu propia dirección.
+2. En Vercel, **Settings → Environment Variables**, agregar `RESEND_API_KEY` con la
+   clave de Resend. Marcarla para Production, Preview y Development.
+3. Volver a desplegar para que la variable quede disponible.
+
+Si el remitente cambia, se ajustan `REMITENTE` y `BUZON` en `api/contacto.js`.
+
+### Contra el spam
+
+Hay un campo trampa (`website`) oculto para personas pero visible para robots: si
+llega con contenido, la función responde éxito y no envía nada. Todo el texto que
+escribe el usuario se escapa antes de entrar al HTML del correo, y las cabeceras
+(asunto, destinatarios) se limpian de saltos de línea.
+
+**Falta rate limiting.** Un atacante que conozca el endpoint puede llamarlo en
+bucle y consumir tu cuota de Resend. Antes de que el sitio tenga tráfico real,
+conviene agregar Vercel Firewall o un límite por IP.
 
 ## Reglas de marca aplicadas
 
@@ -82,7 +120,7 @@ Todas provienen de los sitios públicos de los productos o fueron entregadas dir
 
 ## Pendientes antes de publicar
 
-1. **El formulario no envía nada.** `assets/js/site.js` valida y muestra la confirmación en pantalla, pero no hay backend. Hay que conectar el `submit` a un endpoint real (Formspree, una función serverless o tu propio API).
+1. **El formulario necesita `RESEND_API_KEY` en Vercel y el dominio verificado en Resend.** Sin eso responde un 500 con el correo de contacto como alternativa. Ver "Formulario de contacto" más arriba. Falta también rate limiting.
 2. **Retail / e-commerce quedó fuera del sitio.** El design system la lista como vertical activa, pero no hay producto que la respalde, así que no se menciona. Si existe uno, se agrega como tercer producto.
 3. **Verificar las cifras de precio de Cierra** antes de publicar: se leyeron de cierra.cl y los planes pueden cambiar.
 4. **La dirección "Santiago, Chile"** es la única referencia de ubicación; confirmar si va una dirección real. El dominio confirmado es `impulseai.cl`.

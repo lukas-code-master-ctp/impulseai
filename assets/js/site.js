@@ -1,6 +1,6 @@
 /* =========================================================================
    Impulse AI — Comportamiento del sitio
-   Solo dos cosas: menu movil y validacion del formulario de contacto.
+   Dos cosas: menu movil y envio del formulario de contacto.
    Sin dependencias.
    ========================================================================= */
 (function () {
@@ -43,68 +43,124 @@
   var form = document.querySelector('[data-contact-form]');
   if (!form) return;
 
-  var status = form.querySelector('[data-form-status]');
+  var ENDPOINT = '/api/contacto';
   var EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  var BUZON = 'contacto@impulseai.cl';
 
-  var showError = function (field, message) {
-    var wrapper = field.closest('.field');
-    if (!wrapper) return;
-    wrapper.classList.add('field--error');
-    var slot = wrapper.querySelector('[data-error]');
-    if (slot) slot.textContent = message;
-    field.setAttribute('aria-invalid', 'true');
+  var status = form.querySelector('[data-form-status]');
+  var boton = form.querySelector('button[type=submit]');
+  var textoBoton = boton ? boton.textContent : 'Enviar';
+  var enviando = false;
+
+  var mostrarError = function (campo, mensaje) {
+    var contenedor = campo.closest('.field');
+    if (!contenedor) return;
+    contenedor.classList.add('field--error');
+    var hueco = contenedor.querySelector('[data-error]');
+    if (hueco) hueco.textContent = mensaje;
+    campo.setAttribute('aria-invalid', 'true');
   };
 
-  var clearError = function (field) {
-    var wrapper = field.closest('.field');
-    if (!wrapper) return;
-    wrapper.classList.remove('field--error');
-    var slot = wrapper.querySelector('[data-error]');
-    if (slot) slot.textContent = '';
-    field.removeAttribute('aria-invalid');
+  var limpiarError = function (campo) {
+    var contenedor = campo.closest('.field');
+    if (!contenedor) return;
+    contenedor.classList.remove('field--error');
+    var hueco = contenedor.querySelector('[data-error]');
+    if (hueco) hueco.textContent = '';
+    campo.removeAttribute('aria-invalid');
+  };
+
+  var avisar = function (mensaje, esError) {
+    if (!status) return;
+    status.hidden = false;
+    status.textContent = mensaje;
+    status.setAttribute('data-tone', esError ? 'error' : 'ok');
+    status.focus();
+  };
+
+  var bloquear = function (activo) {
+    enviando = activo;
+    if (!boton) return;
+    boton.disabled = activo;
+    boton.textContent = activo ? 'Enviando…' : textoBoton;
   };
 
   form.addEventListener('input', function (event) {
-    if (event.target.matches('.field__control')) clearError(event.target);
+    if (event.target.matches('.field__control')) limpiarError(event.target);
   });
 
   form.addEventListener('submit', function (event) {
     event.preventDefault();
+    if (enviando) return;
 
-    var fields = Array.prototype.slice.call(form.querySelectorAll('.field__control'));
-    var firstInvalid = null;
+    var campos = Array.prototype.slice.call(form.querySelectorAll('.field__control'));
+    var primerInvalido = null;
 
-    fields.forEach(function (field) {
-      clearError(field);
-      var value = (field.value || '').trim();
+    campos.forEach(function (campo) {
+      limpiarError(campo);
+      var valor = (campo.value || '').trim();
 
-      if (field.required && !value) {
-        showError(field, 'Este campo es obligatorio.');
-        firstInvalid = firstInvalid || field;
+      if (campo.required && !valor) {
+        mostrarError(campo, 'Este campo es obligatorio.');
+        primerInvalido = primerInvalido || campo;
         return;
       }
-      if (field.type === 'email' && value && !EMAIL.test(value)) {
-        showError(field, 'Revisa el correo: falta el formato nombre@empresa.cl');
-        firstInvalid = firstInvalid || field;
+      if (campo.type === 'email' && valor && !EMAIL.test(valor)) {
+        mostrarError(campo, 'Revisa el correo: falta el formato nombre@empresa.cl');
+        primerInvalido = primerInvalido || campo;
       }
     });
 
-    if (firstInvalid) {
-      if (status) {
-        status.hidden = false;
-        status.textContent = 'Faltan datos. Revisa los campos marcados.';
-      }
-      firstInvalid.focus();
+    if (primerInvalido) {
+      avisar('Faltan datos. Revisa los campos marcados.', true);
+      primerInvalido.focus();
       return;
     }
 
-    /* El sitio es estatico: aqui va el POST al endpoint real.
-       Mientras no exista, se confirma en pantalla y no se envia nada. */
-    if (status) {
-      status.hidden = false;
-      status.textContent = 'Listo. Recibimos tu mensaje y respondemos en un día hábil.';
-      status.focus();
-    }
-    form.reset();
+    var datos = {};
+    new FormData(form).forEach(function (valor, clave) {
+      datos[clave] = valor;
+    });
+
+    bloquear(true);
+    avisar('Enviando tu mensaje…', false);
+
+    fetch(ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos)
+    })
+      .then(function (respuesta) {
+        return respuesta.json()
+          .catch(function () { return {}; })
+          .then(function (cuerpo) {
+            return { ok: respuesta.ok, cuerpo: cuerpo };
+          });
+      })
+      .then(function (resultado) {
+        bloquear(false);
+
+        if (!resultado.ok || !resultado.cuerpo.ok) {
+          var mensaje = resultado.cuerpo.error ||
+            'No pudimos enviar tu mensaje. Escríbenos a ' + BUZON + '.';
+          avisar(mensaje, true);
+
+          (resultado.cuerpo.campos || []).forEach(function (nombre) {
+            var campo = form.querySelector('[name="' + nombre + '"]');
+            if (campo) mostrarError(campo, 'Revisa este campo.');
+          });
+          return;
+        }
+
+        avisar(
+          'Listo. Te enviamos una confirmación a tu correo y respondemos en un día hábil.',
+          false
+        );
+        form.reset();
+      })
+      .catch(function () {
+        bloquear(false);
+        avisar('No hay conexión. Escríbenos a ' + BUZON + '.', true);
+      });
   });
 })();

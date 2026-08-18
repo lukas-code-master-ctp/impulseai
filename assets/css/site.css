@@ -504,6 +504,9 @@ select.field__control {
   padding: var(--space-4) var(--space-5);
   background: var(--surface-card);
 }
+/* Exito en tinta, problema en naranja: el naranja marca lo que pide accion */
+.form-note[data-tone="ok"] { border-left-color: var(--ink-900); }
+.form-note[data-tone="error"] { border-left-color: var(--brand-500); }
 
 /* ---------------------------------------------------------------- Footer */
 .site-footer {
