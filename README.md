@@ -62,7 +62,8 @@ Todas provienen de los sitios públicos de los productos o fueron entregadas dir
 | 2 productos propios en operación | Cierra y TapCar |
 | +100 vehículos operando con TapCar | tapcar.cl |
 | 2 semanas de implementación, 2,5 UF/mes, 1 mes gratis | cierra.cl |
-| 0 apps que instalar, 2 a 50 vehículos | tapcar.cl |
+| 0 apps que instalar | tapcar.cl |
+| Sin tope de vehículos | Dato entregado |
 
 ## Pendientes antes de publicar
 
