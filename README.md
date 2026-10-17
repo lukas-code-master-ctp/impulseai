@@ -17,7 +17,7 @@ vercel.json           cleanUrls y trailingSlash
 dev-server.py         Servidor local que imita a Vercel
 assets/css/tokens.css Tokens de marca (color, tipo, espaciado, bordes, motion)
 assets/css/site.css   Componentes y layout del sitio
-assets/js/site.js     Menú móvil y validación del formulario
+assets/js/site.js     Menú móvil, movimiento y validación del formulario
 assets/img/           Símbolo en SVG, favicon y capturas de producto
 .claude/launch.json   Config del servidor local de previsualización
 ```
@@ -123,7 +123,26 @@ El símbolo del hero corre en bucle infinito (`.mark--loop`, ciclo de 3s):
 
 **Siempre hacia adelante, nunca en reversa.** Un `alternate` haría que el punto volviera cayendo hacia abajo, que lee como retroceso — lo contrario del impulso que representa la marca. La pausa entre ciclos es la que separa una repetición de la siguiente.
 
-`.mark--animated` conserva la variante de una sola reproducción, por si se quiere usar en otra pieza. Ambas se desactivan con `prefers-reduced-motion`.
+`.mark--animated` conserva la variante de una sola reproducción, por si se quiere usar en otra pieza. Con `prefers-reduced-motion` ambas quedan quietas en la pose del logo.
+
+### Movimiento del sitio
+
+Todo usa el mismo gesto que el símbolo: subir y asentarse con `--ease-launch`, y solo se anima `transform` y `opacity`.
+
+| Dónde | Qué pasa |
+| --- | --- |
+| Titular grande (`h1.t-display`) | Cada palabra sube desde detrás de su línea, escalonada 45ms |
+| Bloques al hacer scroll | Encabezados, tarjetas, pasos, cifras y capturas suben 24px y aparecen, escalonados 70ms entre hermanos |
+| Lista de pasos | Un trazo naranja de 2px se dibuja sobre la columna de la clave |
+| Cifras de 2–3 dígitos (`+100`) | Cuentan desde cero al aparecer |
+| Panel naranja de la home | Estelas blancas suben a 15°, el ángulo del símbolo. Botón «Pausar animación»; se detienen fuera de pantalla |
+| Header | Línea de progreso de lectura (CSS scroll-driven; si el navegador no lo soporta, no aparece) |
+| Logo | Al pasar el mouse, el punto sale a 15° y vuelve a entrar |
+| Tarjetas enlazadas | Trazo naranja en el borde superior y la flecha se inclina 15° |
+| Navegación | El subrayado crece desde la izquierda |
+| Entre páginas | Fundido con View Transitions; el header queda quieto |
+
+Lo que oculta contenido depende de la clase `html.motion`, que un script en el `<head>` solo pone si no hay movimiento reducido y existe `IntersectionObserver`; si `site.js` no confirma en 2,5s, la clase se retira. Sin JS o con movimiento reducido, el sitio se ve completo y quieto.
 
 ## Cifras usadas
 
