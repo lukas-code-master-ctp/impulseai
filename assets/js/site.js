@@ -1,6 +1,6 @@
 /* =========================================================================
    Impulse AI — Comportamiento del sitio
-   Dos cosas: menu movil y envio del formulario de contacto.
+   Tres cosas: menu movil, movimiento y envio del formulario de contacto.
    Sin dependencias.
    ========================================================================= */
 (function () {
@@ -37,6 +37,108 @@
     window.addEventListener('resize', function () {
       if (window.innerWidth > 860) setOpen(false);
     });
+  }
+
+  /* ----------------------------------------------------------- Movimiento
+     Solo corre si el <head> activo html.motion: sin movimiento reducido y
+     con IntersectionObserver. Lo que se oculta lo decide site.css.
+     ---------------------------------------------------------------------- */
+  var root = document.documentElement;
+
+  if (root.classList.contains('motion')) {
+    var REVEAL = [
+      '.hero__copy > :not(.hero__title)',
+      '.hero__panel > .shot',
+      '.section-head > *',
+      '.grid > *',
+      '.ruled-list > li',
+      '.split__side > :not(h1)',
+      '.panel-ink > *',
+      '.cta > *',
+      'main > .section:first-child > .wrap.stack > :not(h1)'
+    ].join(',');
+
+    // Titulos display: cada palabra en su propia mascara. El lector de
+    // pantalla lee el aria-label, no los fragmentos.
+    Array.prototype.forEach.call(document.querySelectorAll('h1.t-display'), function (titulo) {
+      if (titulo.children.length) { titulo.classList.add('is-split'); return; }
+      var texto = titulo.textContent.trim();
+      titulo.setAttribute('aria-label', texto);
+      titulo.textContent = '';
+      texto.split(/\s+/).forEach(function (palabra, i) {
+        var mascara = document.createElement('span');
+        var interior = document.createElement('span');
+        mascara.className = 'split-word';
+        mascara.setAttribute('aria-hidden', 'true');
+        mascara.style.setProperty('--word-index', i);
+        interior.textContent = palabra;
+        mascara.appendChild(interior);
+        titulo.appendChild(mascara);
+        titulo.appendChild(document.createTextNode(' '));
+      });
+      titulo.classList.add('is-split');
+    });
+
+    // Cifras: las que son un entero de dos o tres digitos cuentan desde cero
+    var contar = function (el) {
+      var match = /^(\+?)(\d{2,3})$/.exec(el.textContent.trim());
+      if (!match) return;
+      var prefijo = match[1];
+      var meta = parseInt(match[2], 10);
+      var inicio = null;
+      var DURACION = 900;
+      var paso = function (t) {
+        if (inicio === null) inicio = t;
+        var p = Math.min((t - inicio) / DURACION, 1);
+        var curva = 1 - Math.pow(1 - p, 3);
+        el.textContent = prefijo + Math.round(meta * curva);
+        if (p < 1) requestAnimationFrame(paso);
+      };
+      el.setAttribute('aria-label', el.textContent.trim());
+      requestAnimationFrame(paso);
+    };
+
+    // Escalonado: cada elemento espera segun su posicion entre hermanos
+    var escalonar = function (el) {
+      var hermanos = el.parentElement ? el.parentElement.children : [];
+      var i = Array.prototype.indexOf.call(hermanos, el);
+      el.style.setProperty('--reveal-delay', Math.min(i, 6) * 70 + 'ms');
+    };
+
+    var revelar = new IntersectionObserver(function (entradas) {
+      entradas.forEach(function (entrada) {
+        if (!entrada.isIntersecting) return;
+        var el = entrada.target;
+        el.classList.add('is-visible');
+        Array.prototype.forEach.call(el.querySelectorAll('.stat__value'), contar);
+        revelar.unobserve(el);
+      });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+
+    Array.prototype.forEach.call(document.querySelectorAll(REVEAL), function (el) {
+      escalonar(el);
+      revelar.observe(el);
+    });
+
+    // Bucles del panel naranja: se detienen fuera de pantalla y con el boton
+    var panelMarca = document.querySelector('.hero__panel--brand');
+    if (panelMarca) {
+      new IntersectionObserver(function (entradas) {
+        panelMarca.classList.toggle('is-offscreen', !entradas[0].isIntersecting);
+      }).observe(panelMarca);
+    }
+
+    var pausa = document.querySelector('[data-motion-toggle]');
+    if (pausa) {
+      pausa.addEventListener('click', function () {
+        var pausado = root.getAttribute('data-motion') !== 'paused';
+        if (pausado) root.setAttribute('data-motion', 'paused');
+        else root.removeAttribute('data-motion');
+        pausa.textContent = pausado ? 'Reanudar animación' : 'Pausar animación';
+      });
+    }
+
+    root.classList.add('motion-ready');
   }
 
   /* --------------------------------------------- Formulario de contacto */
